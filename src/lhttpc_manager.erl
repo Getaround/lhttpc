@@ -40,7 +40,8 @@
         start_link/1,
         connection_count/1,
         connection_count/2,
-        update_connection_timeout/2
+        update_connection_timeout/2,
+        set_max_pool_size/2
     ]).
 -export([
         init/1,
@@ -61,6 +62,16 @@
         max_pool_size = 50 :: non_neg_integer(),
         timeout = 300000 :: non_neg_integer()
     }).
+
+
+%%------------------------------------------------------------------------------
+%% @doc Sets the maximum pool size for the specified pool.
+%% @end
+%%------------------------------------------------------------------------------
+-spec set_max_pool_size(pool_id(), non_neg_integer()) -> ok.
+set_max_pool_size(PidOrName, Size) when is_integer(Size), Size > 0 ->
+    gen_server:cast(PidOrName, {set_max_pool_size, Size}).
+
 
 %% @spec (PoolPidOrName) -> Count
 %%    Count = integer()
@@ -180,6 +191,8 @@ handle_call(_, _, State) ->
 -spec handle_cast(any(), #httpc_man{}) -> {noreply, #httpc_man{}}.
 handle_cast({update_timeout, Milliseconds}, State) ->
     {noreply, State#httpc_man{timeout = Milliseconds}};
+handle_cast({set_max_pool_size, Size}, State) ->
+    {noreply, State#httpc_man{max_pool_size = Size}};
 handle_cast(_, State) ->
     {noreply, State}.
 
