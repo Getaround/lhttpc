@@ -68,7 +68,7 @@
 %% @doc Sets the maximum pool size for the specified pool.
 %% @end
 %%------------------------------------------------------------------------------
--spec set_max_pool_size(pool_id(), non_neg_integer()) -> ok.
+-spec set_max_pool_size(pid() | atom(), non_neg_integer()) -> ok.
 set_max_pool_size(PidOrName, Size) when is_integer(Size), Size > 0 ->
     gen_server:cast(PidOrName, {set_max_pool_size, Size}).
 
